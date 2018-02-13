@@ -6,8 +6,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,12 +37,14 @@ public class CheckUsername extends Dispatcher {
     public String getServletInfo() {
         return "Registration servlet";
     }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("windows-1251");
         response.setCharacterEncoding("windows-1251");
         response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
         try {
             DBconnect dBconnect = new DBconnect();
             PreparedStatement pst = dBconnect.getConnection().prepareStatement("SELECT login,password FROM teachers");
@@ -83,9 +87,9 @@ public class CheckUsername extends Dispatcher {
             } else {
                 if (users.contains(request.getParameter("user"))
                         & passwords.contains(request.getParameter("password")) & role == 0) {
-                    this.forward("/successLoginStudent.jsp", request, response);
+                    this.forward("/view.jsp", request, response);
                 } else {
-                    this.forward("/index.jsp", request, response);
+                    out.println("<h1>Невірний логін або пароль!</h1>");
                 }
             }
         } catch (SQLException e) {
@@ -93,11 +97,13 @@ public class CheckUsername extends Dispatcher {
         }
     }
     @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("image/jpeg");
         ServletOutputStream out;
         out = resp.getOutputStream();
-        FileInputStream flinp = new FileInputStream("C:\\Users\\Yuriy\\IdeaProjects\\RegLogApp\\target\\RegLogApp\\uploads\\"+photo);
+        String applicationPath = req.getServletContext().getRealPath("");
+        String uploadFilePath = applicationPath + File.separator + "uploads" + File.separator + photo;
+        FileInputStream flinp = new FileInputStream(uploadFilePath);
         BufferedInputStream buffinp = new BufferedInputStream(flinp);
         BufferedOutputStream buffoup = new BufferedOutputStream(out);
         int ch;

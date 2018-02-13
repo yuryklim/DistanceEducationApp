@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,12 +29,14 @@ public class RegisterServlet extends Dispatcher {
     private String fotoName;
     private String teacherPassword;
     private static final String UPLOAD_DIR = "uploads";
-
+    static String  user;
+    //static String user; 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("windows-1251");
         resp.setCharacterEncoding("windows-1251");
         resp.setContentType("text/html");
+        PrintWriter out=resp.getWriter();
         // Check that we have a file upload request
         boolean isMultipart = ServletFileUpload.isMultipartContent(req);
         // Create a factory for disk-based file items
@@ -77,7 +80,7 @@ public class RegisterServlet extends Dispatcher {
         } catch (FileUploadException e) {
             e.printStackTrace();
         }
-        String user = list.get(0);
+        user = list.get(0);
         String password = list.get(1);
         String lastname = list.get(2);
         String firstname = list.get(3);
@@ -102,6 +105,9 @@ public class RegisterServlet extends Dispatcher {
 
                     queryRegisterStudent(user, password, lastname, firstname, surname, academicTitle, degree, organization, post, dBconnect);
                     this.forward("/successRegistration.jsp", req, resp);
+                } else {
+                    out.println("<h1>Такий користувач існує! Введіть інший логін.</h1>");
+                    // this.forward("/registration.jsp", req, resp);
                 }
             }
         } catch (SQLException e) {
@@ -111,8 +117,6 @@ public class RegisterServlet extends Dispatcher {
             this.forward("/index.jsp", req, resp);
         }
     }
-
-
     private DBconnect queryGetLoginsAndAdminPass() throws SQLException {
         DBconnect dBconnect = new DBconnect();
         PreparedStatement pst = dBconnect.getConnection().prepareStatement("SELECT login FROM teachers ");

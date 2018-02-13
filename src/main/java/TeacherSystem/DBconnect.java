@@ -1,4 +1,4 @@
-package servlets;
+package TeacherSystem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,16 +8,14 @@ import java.sql.SQLException;
  *
  * Created by Yuriy on 24.04.2017.
  */
-class DBconnect {
+public class DBconnect {
     private Connection connection;
-    DBconnect() {
-
+    public DBconnect() throws SQLException {
         String url = "jdbc:mysql://localhost:3306/";
         String dbName = "databasenew";
         String driver = "com.mysql.jdbc.Driver";
         String username = "root";
         String passwordDB = "yura85";
-
         try {
             Class.forName(driver);
             connection = DriverManager.
@@ -28,7 +26,7 @@ class DBconnect {
             e.printStackTrace();
         }
     }
-    Connection getConnection() {
+    public Connection getConnection() {
         return connection;
     }
 }

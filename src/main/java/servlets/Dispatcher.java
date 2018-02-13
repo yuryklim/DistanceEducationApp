@@ -8,9 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
+ *
  * Created by Yuriy on 23.04.2017.
  */
-public class Dispatcher extends HttpServlet {
+public class Dispatcher  extends HttpServlet {
     void forward(String address, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setCharacterEncoding("windows-1251");
